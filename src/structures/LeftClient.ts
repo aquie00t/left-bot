@@ -1,30 +1,50 @@
-import { Client, Events } from 'discord.js';
+import { Client, Events, IntentsBitField } from 'discord.js';
+import InteractionHandler from './handlers/InteractionHandler';
+import ILeftConfig from './interfaces/ILeftClientConfig';
 
-export class LeftClient extends Client
+export default class LeftClient extends Client
 {
+    private readonly interactionHandler: InteractionHandler;
+    public readonly config: ILeftConfig;
     public constructor()
     {
         super(
             {
-                intents: 1,
+                intents: [IntentsBitField.Flags.Guilds],
             }
         );
+
+        if(!process.env.SUPPORT_SERVER || !process.env.DISCORD_GENERATED_URL)
+        {
+            console.error("Generated url and support server are missing in .env configuration file");
+            process.exit(0);
+        }
+
+        this.config = {
+            SUPPORT_SERVER: process.env.SUPPORT_SERVER,
+            INVITE_URL: process.env.DISCORD_GENERATED_URL
+        };
+
+        this.interactionHandler = new InteractionHandler(this);
     }
 
     public async initialize(token: string)
     {
         this.initializeEvents();
-        await this.login(token);
+
+        await this.interactionHandler.initialize();
+        return await this.login(token);
     }
 
-    private initializeEvents() {
+    private initializeEvents(): void {
         this.once(Events.ClientReady, this.onReady.bind(this));
     }
 
     //#region Events
-    private onReady()
+    private async onReady()
     {
         console.log("Bot Is Ready!");
+        await this.interactionHandler.registerCommands();
     }
 
     //#endregion

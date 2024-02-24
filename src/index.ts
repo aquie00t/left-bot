@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { LeftClient } from "./structures/LeftClient";
+import LeftClient from "./structures/LeftClient";
 
 (async() => {
     config();
