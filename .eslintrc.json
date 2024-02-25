@@ -6,8 +6,13 @@
       "plugin:@typescript-eslint/eslint-recommended",
       "plugin:@typescript-eslint/recommended"
     ],
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
     "rules": {
-      "semi": ["error", "always"]
+      "semi": ["error", "always"],
+      "@typescript-eslint/explicit-function-return-type": ["error"],
+      "@typescript-eslint/await-thenable": ["error"]
     }
   }
   

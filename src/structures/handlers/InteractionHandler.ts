@@ -1,4 +1,4 @@
-import { CacheType, ChatInputCommandInteraction, Collection, Events, Interaction } from "discord.js";
+import { ApplicationCommand, CacheType, ChatInputCommandInteraction, Collection, Events, Interaction } from "discord.js";
 import LeftClient from "../LeftClient";
 import HandlerBase from "../interfaces/base/HandlerBase";
 import fs from 'fs';
@@ -14,7 +14,7 @@ export default class InteractionHandler extends HandlerBase {
         this.commands = new Collection();
     }
 
-    private async loadedCommands() {
+    private async loadedCommands(): Promise<Collection<string, CommandBase>> {
         const folders = fs.readdirSync("./src/commands/");
 
         for(const folder of folders) {
@@ -28,27 +28,28 @@ export default class InteractionHandler extends HandlerBase {
         }
         return this.commands;
     }
-    private initializeEvents()
+    private initializeEvents(): void
     {
         this.client.on(Events.InteractionCreate, this.onInteractionCreate.bind(this));
 
     }
-    public async registerCommands() {
-        const testGuild = await this.client.guilds.cache.get("1210984678711099552");
+    public async registerCommands(): Promise<Collection<string, ApplicationCommand>> {
+        const testGuild = this.client.guilds.cache.get("1210984678711099552");
 
         if(!testGuild) 
             throw "Test Guild Id Invalid.";
         const commandsDataJSON = this.commands.map((c) => c.data.toJSON());
-        console.log(this.commands);
+        
         return await testGuild.commands.set(commandsDataJSON);
     }
-    public async initialize() {
+
+    public async initialize(): Promise<void> {
         this.initializeEvents();
         await this.loadedCommands();
     }
 
     //#region 
-    private async onInteractionCreate(interaction: Interaction)
+    private async onInteractionCreate(interaction: Interaction): Promise<void>
     {
         if(!interaction.isCommand())
             return;

@@ -1,7 +1,7 @@
 import { config } from "dotenv";
 import LeftClient from "./structures/LeftClient";
 
-(async() => {
+(async(): Promise<void> => {
     config();
 
     const client = new LeftClient();

@@ -28,7 +28,7 @@ export default class LeftClient extends Client
         this.interactionHandler = new InteractionHandler(this);
     }
 
-    public async initialize(token: string)
+    public async initialize(token: string): Promise<string>
     {
         this.initializeEvents();
 
@@ -41,7 +41,7 @@ export default class LeftClient extends Client
     }
 
     //#region Events
-    private async onReady()
+    private async onReady(): Promise<void>
     {
         console.log("Bot Is Ready!");
         await this.interactionHandler.registerCommands();
