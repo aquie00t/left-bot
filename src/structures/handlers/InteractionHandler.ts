@@ -21,12 +21,12 @@ export default class InteractionHandler extends HandlerBase {
             const files = fs.readdirSync(`./src/commands/${folder}`);
             for(const file of files) {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const command = new (await import(`../../commands/${folder}/${file}`)).default(this.client);
-                
+                const command: CommandBase = new (await import(`../../commands/${folder}/${file}`)).default(this.client);
                 this.commands.set(command.data.name, command); 
-                return this.commands;            
+               
             }
         }
+        return this.commands;
     }
     private initializeEvents()
     {
@@ -38,8 +38,9 @@ export default class InteractionHandler extends HandlerBase {
 
         if(!testGuild) 
             throw "Test Guild Id Invalid.";
-
-        return await testGuild.commands.set(this.commands.map((c => c.data.toJSON())));
+        const commandsDataJSON = this.commands.map((c) => c.data.toJSON());
+        console.log(this.commands);
+        return await testGuild.commands.set(commandsDataJSON);
     }
     public async initialize() {
         this.initializeEvents();

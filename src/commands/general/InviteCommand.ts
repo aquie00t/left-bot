@@ -3,7 +3,7 @@ import LeftClient from "../../structures/LeftClient";
 import CommandBase from "../../structures/interfaces/base/CommandBase";
 import Embeds from "../../structures/utils/Embeds";
 
-export default class SupportServerCommand extends CommandBase {
+export default class InviteCommand extends CommandBase {
 
     public readonly data: SlashCommandBuilder;
     public constructor(client: LeftClient) {
