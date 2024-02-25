@@ -3,15 +3,17 @@ import LeftClient from "../LeftClient";
 import HandlerBase from "../interfaces/base/HandlerBase";
 import fs from 'fs';
 import CommandBase from "../interfaces/base/CommandBase";
+import PlayerManager from "../managers/PlayerManager";
 
 export default class InteractionHandler extends HandlerBase {
 
     private readonly commands: Collection<string, CommandBase>;
-
+    private readonly players: PlayerManager;
     public constructor(client: LeftClient) {
         super(client);
 
         this.commands = new Collection();
+        this.players = new PlayerManager();
     }
 
     private async loadedCommands(): Promise<Collection<string, CommandBase>> {
@@ -21,7 +23,7 @@ export default class InteractionHandler extends HandlerBase {
             const files = fs.readdirSync(`./src/commands/${folder}`);
             for(const file of files) {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const command: CommandBase = new (await import(`../../commands/${folder}/${file}`)).default(this.client);
+                const command: CommandBase = new (await import(`../../commands/${folder}/${file}`)).default(this.client, this.players);
                 this.commands.set(command.data.name, command); 
                
             }

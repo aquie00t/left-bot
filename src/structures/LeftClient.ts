@@ -10,7 +10,7 @@ export default class LeftClient extends Client
     {
         super(
             {
-                intents: [IntentsBitField.Flags.Guilds],
+                intents: [IntentsBitField.Flags.Guilds,IntentsBitField.Flags.GuildMembers, IntentsBitField.Flags.GuildVoiceStates],
             }
         );
 
@@ -46,6 +46,5 @@ export default class LeftClient extends Client
         console.log("Bot Is Ready!");
         await this.interactionHandler.registerCommands();
     }
-
     //#endregion
 }

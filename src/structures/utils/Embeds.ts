@@ -4,7 +4,7 @@ export default class Embeds {
     public static defaultEmbed(message: string): EmbedBuilder {
         return new EmbedBuilder()
             .setColor(Colors.White)
-            .setDescription(`**◻️ ${message} **`);
+            .setDescription(`**▫️ ${message} **`);
     }
 
     public static linkEmbed(title: string, url: string): EmbedBuilder {
