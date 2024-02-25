@@ -1,5 +1,5 @@
 import { CacheType, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import LeftClient from "../LeftClient";
+import LeftClient from "../../LeftClient";
 
 export default abstract class CommandBase {
     protected client: LeftClient;

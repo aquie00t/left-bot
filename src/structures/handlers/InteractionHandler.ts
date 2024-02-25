@@ -1,8 +1,8 @@
 import { CacheType, ChatInputCommandInteraction, Collection, Events, Interaction } from "discord.js";
 import LeftClient from "../LeftClient";
-import HandlerBase from "../interfaces/HandlerBase";
+import HandlerBase from "../interfaces/base/HandlerBase";
 import fs from 'fs';
-import CommandBase from "../interfaces/CommandBase";
+import CommandBase from "../interfaces/base/CommandBase";
 
 export default class InteractionHandler extends HandlerBase {
 

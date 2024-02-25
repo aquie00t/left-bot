@@ -1,4 +1,4 @@
-import LeftClient from "../LeftClient";
+import LeftClient from "../../LeftClient";
 
 export default abstract class HandlerBase {
     protected client: LeftClient;
