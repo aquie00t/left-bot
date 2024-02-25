@@ -21,4 +21,11 @@ export default class Player
     {
         return this.connection.hasConnection(guildId);
     }
+
+    public leave(guildId: string): void
+    {
+        if(!this.connection.hasConnection(guildId))
+            throw "You can't cut what doesn't exist.";
+        this.connection.connection!.disconnect();
+    }
 }
