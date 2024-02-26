@@ -1,4 +1,4 @@
-import { CreateVoiceConnectionOptions, JoinVoiceChannelOptions, VoiceConnection, VoiceConnectionStatus, getVoiceConnection, joinVoiceChannel } from "@discordjs/voice";
+import { AudioPlayer, CreateVoiceConnectionOptions, JoinVoiceChannelOptions, PlayerSubscription, VoiceConnection, VoiceConnectionStatus, getVoiceConnection, joinVoiceChannel } from "@discordjs/voice";
 import PlayerManager from "./PlayerManager";
 
 export default class ConnectionManager 
@@ -19,6 +19,13 @@ export default class ConnectionManager
 
         this.initializeEvents();
         return this.connection;
+    }
+
+    public subsribe(audioPlayer: AudioPlayer): PlayerSubscription
+    {
+        if(!this.connection)
+            throw "Connection undefined!";
+        return this.connection.subscribe(audioPlayer)!;
     }
 
     public hasConnection(guildId: string): boolean
