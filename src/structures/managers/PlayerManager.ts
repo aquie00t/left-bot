@@ -1,5 +1,6 @@
 import { Collection } from "discord.js";
 import Player from "../Player";
+import IPlayerOptions from "../interfaces/IPlayerOptions";
 
 export default class PlayerManager 
 {
@@ -22,11 +23,11 @@ export default class PlayerManager
         return this.players.has(guildId);
     }
 
-    public createPlayer(guildId: string): Player
+    public createPlayer(guildId: string, options: IPlayerOptions): Player
     {
         if(this.hasPlayer(guildId))
             return this.getPlayer(guildId);
-        this.players.set(guildId, new Player(this));
+        this.players.set(guildId, new Player(this, options));
         console.log("Created Player.");
         return this.getPlayer(guildId);
     }

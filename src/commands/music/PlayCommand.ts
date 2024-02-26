@@ -13,16 +13,18 @@ export default class PlayCommand extends CommandBase {
         this.voiceChannel = true;
         this.data = new SlashCommandBuilder()
             .setName("play")
-            .setDescription("Play a music")
+            .setDescription("The song plays.")
             .addStringOption(option =>
                 option
                     .setName("query")
-                    .setDescription("query string")
+                    .setDescription("Text to query on Youtube or Spotify.")
                     .setRequired(true)) as SlashCommandBuilder;
     }
     public async execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
         const query_string = interaction.options.getString("query")!;
-        const player = this.players.createPlayer(interaction.guildId!);
+        const player = this.players.createPlayer(interaction.guildId!, {
+            textChannel: interaction.channel!
+        });
 
         if(!player.hasConnect(interaction.guildId!))
         {
@@ -37,7 +39,7 @@ export default class PlayCommand extends CommandBase {
         const query_result = await player.search(query_string);
 
         if(query_result.length == 0) {
-            interaction.reply({ embeds: [Embeds.errorEmbed("Query Result Failed!")]});
+            interaction.reply({ embeds: [Embeds.errorEmbed("No results found.")]});
             return;
         } 
 
@@ -49,7 +51,7 @@ export default class PlayCommand extends CommandBase {
                 await interaction.reply({ embeds: [Embeds.defaultEmbed(`Added qeueu \` ${query_result.length} \` tracks`)]});
                 return;
             }
-            await interaction.reply({ embeds: [Embeds.defaultEmbed(`Added queue \` ${query_result[0].title} \` track`)]});
+            await interaction.reply({ embeds: [Embeds.defaultEmbed(`Added queue \` ${query_result[0].title} \``)]});
             return;
         }
 

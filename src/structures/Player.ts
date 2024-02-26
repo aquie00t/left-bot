@@ -5,6 +5,7 @@ import QueryManager from "./managers/QueryManager";
 import { Track } from "../types/query";
 import AudioPlayerManager from "./managers/AudioPlayerManager";
 import QueueManager from "./managers/QueueManager";
+import IPlayerOptions from "./interfaces/IPlayerOptions";
 
 export default class Player
 {
@@ -12,12 +13,14 @@ export default class Player
     private readonly connection: ConnectionManager;
     private readonly audioPlayer: AudioPlayerManager;
     private readonly queue: QueueManager;
-    public constructor(players: PlayerManager)
+    private readonly options: IPlayerOptions;
+    public constructor(players: PlayerManager, options: IPlayerOptions)
     {
         this.players = players;
+        this.options = options;
         this.connection = new ConnectionManager(this.players);
         this.queue = new QueueManager;
-        this.audioPlayer = new AudioPlayerManager(this.queue);        
+        this.audioPlayer = new AudioPlayerManager(this.queue, options);     
     }
 
     public join(config: CreateVoiceConnectionOptions & JoinVoiceChannelOptions): void

@@ -2,13 +2,19 @@ import { AudioPlayer, AudioPlayerStatus, createAudioPlayer, createAudioResource 
 import { Track } from "../../types/query";
 import play from 'play-dl';
 import QueueManager from "./QueueManager";
+import IPlayerOptions from "../interfaces/IPlayerOptions";
+import Embeds from "../utils/Embeds";
+import { Message } from "discord.js";
 
 export default class AudioPlayerManager {
     public discordPlayer!: AudioPlayer;
     private readonly queueManager: QueueManager;
-    public constructor(queueManager: QueueManager)
+    private readonly options: IPlayerOptions;
+    private deletedMessage?: Message;
+    public constructor(queueManager: QueueManager, options: IPlayerOptions)
     {
         this.queueManager = queueManager;
+        this.options = options;
     }
     public createDiscordAudioPlayer(): AudioPlayer
     {
@@ -38,13 +44,17 @@ export default class AudioPlayerManager {
         return this.discordPlayer.state.status == AudioPlayerStatus.Playing;
     } 
     //#region Events
-    private onIdle(): void {
+    private async onIdle(): Promise<void> {
         console.log("Audio Player Idle");
         this.queueManager.trackIndex += 1;
-        console.log(this.queueManager.trackIndex);
+        if(this.deletedMessage)
+            await this.deletedMessage.delete();
         if(this.queueManager.hasTrack(this.queueManager.trackIndex))
         {
-            this.play(this.queueManager.tracks[this.queueManager.trackIndex]);
+            const track = this.queueManager.tracks[this.queueManager.trackIndex];
+            this.play(track);
+
+            this.deletedMessage = await this.options.textChannel.send({ embeds: [Embeds.nowPlayingEmbed(track.title)]});
         }
     }
     //#endregion

@@ -16,7 +16,9 @@ export default class JoinCommand extends CommandBase
             .setDescription("Join a voice channel");
     }
     public async execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
-        const player = this.players.createPlayer(interaction.guildId!);
+        const player = this.players.createPlayer(interaction.guildId!, {
+            textChannel: interaction.channel!
+        });
 
         const memberVoiceChannel = (interaction.member as GuildMember).voice.channel!;
         

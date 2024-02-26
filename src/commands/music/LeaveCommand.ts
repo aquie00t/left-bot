@@ -19,7 +19,6 @@ export default class LeaveCommand extends CommandBase {
             await interaction.reply({ embeds: [Embeds.errorEmbed("There is no player anyway.")]});
             return;
         }
-
         const player = this.players.getPlayer(interaction.guildId!);
 
         if(!player.hasConnect(interaction.guildId!))

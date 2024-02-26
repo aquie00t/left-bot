@@ -68,7 +68,15 @@ export default class InteractionHandler extends HandlerBase {
                 await interaction.reply({ embeds: [Embeds.warnEmbed("Join a voice channel try again.")]});
                 return;
             }
-            
+
+            if(interaction.guild?.members.me?.voice.channel)
+            {
+                if(memberVoiceChannel.id != interaction.guild!.members.me.voice.channel.id)
+                {
+                    await interaction.reply({ embeds: [Embeds.warnEmbed("You must be on the same channel as the bot.")]});
+                    return;
+                }
+            }
         }
         await command.execute(interaction as ChatInputCommandInteraction<CacheType>);
     }
