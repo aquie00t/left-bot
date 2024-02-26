@@ -4,18 +4,20 @@ import ConnectionManager from "./managers/ConnectionManager";
 import QueryManager from "./managers/QueryManager";
 import { Track } from "../types/query";
 import AudioPlayerManager from "./managers/AudioPlayerManager";
+import QueueManager from "./managers/QueueManager";
 
 export default class Player
 {
     private readonly players: PlayerManager;
     private readonly connection: ConnectionManager;
     private readonly audioPlayer: AudioPlayerManager;
-
+    private readonly queue: QueueManager;
     public constructor(players: PlayerManager)
     {
         this.players = players;
         this.connection = new ConnectionManager(this.players);
-        this.audioPlayer = new AudioPlayerManager();
+        this.queue = new QueueManager;
+        this.audioPlayer = new AudioPlayerManager(this.queue);        
     }
 
     public join(config: CreateVoiceConnectionOptions & JoinVoiceChannelOptions): void
@@ -43,5 +45,25 @@ export default class Player
     }
     public async search(query: string): Promise<Track[]> {
         return (await QueryManager.youtubeQuery(query));
+    }
+
+    public addTrack(track: Track): void
+    {
+        this.queue.addTrack(track);
+    }
+
+    public get playing(): boolean 
+    {
+        return this.audioPlayer.playing;
+    }
+
+    public async playFromQueue(trackIndex: number = this.queue.trackIndex): Promise<void>
+    {
+        const track = this.queue.tracks[trackIndex];
+
+        if(!track)
+            throw "Track Undefined!";
+
+        return await this.play(track);
     }
 }

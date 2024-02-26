@@ -1,9 +1,10 @@
-import { ApplicationCommand, CacheType, ChatInputCommandInteraction, Collection, Events, Interaction } from "discord.js";
+import { ApplicationCommand, CacheType, ChatInputCommandInteraction, Collection, Events, GuildMember, Interaction } from "discord.js";
 import LeftClient from "../LeftClient";
 import HandlerBase from "../interfaces/base/HandlerBase";
 import fs from 'fs';
 import CommandBase from "../interfaces/base/CommandBase";
 import PlayerManager from "../managers/PlayerManager";
+import Embeds from "../utils/Embeds";
 
 export default class InteractionHandler extends HandlerBase {
 
@@ -57,7 +58,18 @@ export default class InteractionHandler extends HandlerBase {
             return;
 
         const command = this.commands.get(interaction.commandName)!;
-        
+
+        if(command.voiceChannel)
+        {
+            const memberVoiceChannel = (interaction.member as GuildMember).voice.channel;
+
+            if(!memberVoiceChannel)
+            {
+                await interaction.reply({ embeds: [Embeds.warnEmbed("Join a voice channel try again.")]});
+                return;
+            }
+            
+        }
         await command.execute(interaction as ChatInputCommandInteraction<CacheType>);
     }
     //#endregion

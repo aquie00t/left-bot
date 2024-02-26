@@ -24,4 +24,12 @@ export default class Embeds {
             .setColor(Colors.White)
             .setDescription(`**❔ ${error_message} **`);
     }
+
+    public static nowPlayingEmbed(title: string): EmbedBuilder
+    {
+        return new EmbedBuilder()
+            .setColor(Colors.White)
+            .setDescription(`**▫️ \`${title} \`**`)
+            .setTitle("Now Playing");
+    }
 }

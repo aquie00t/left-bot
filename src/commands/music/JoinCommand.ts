@@ -10,7 +10,7 @@ export default class JoinCommand extends CommandBase
     public constructor(client: LeftClient,players: PlayerManager)
     {
         super(client, players);
-
+        this.voiceChannel = true;
         this.data = new SlashCommandBuilder()
             .setName("join")
             .setDescription("Join a voice channel");
@@ -18,14 +18,7 @@ export default class JoinCommand extends CommandBase
     public async execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
         const player = this.players.createPlayer(interaction.guildId!);
 
-        const memberVoiceChannel = (interaction.member as GuildMember).voice.channel;
-
-        if(!memberVoiceChannel)
-        {
-            await interaction.reply({ embeds: [Embeds.warnEmbed("Join a voice channel try again.")]});
-            this.players.deletePlayer(interaction.guildId!);
-            return;
-        }
+        const memberVoiceChannel = (interaction.member as GuildMember).voice.channel!;
         
         if(player.hasConnect(memberVoiceChannel.guildId))
         {
