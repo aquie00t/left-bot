@@ -18,7 +18,6 @@ export default class QueryManager
                 const searched = await play.search(url, { source : { youtube : "video" } });
                 if(searched.length == 0)
                     return [];
-
                 return [{
                     title: searched[0].title!,
                     url: searched[0].url,

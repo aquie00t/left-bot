@@ -1,13 +1,18 @@
 import { AudioPlayer, CreateVoiceConnectionOptions, JoinVoiceChannelOptions, PlayerSubscription, VoiceConnection, VoiceConnectionStatus, getVoiceConnection, joinVoiceChannel } from "@discordjs/voice";
 import PlayerManager from "./PlayerManager";
+import Player from "../Player";
+import Embeds from "../utils/Embeds";
 
 export default class ConnectionManager 
 {
     private readonly players: PlayerManager;
     public connection?: VoiceConnection;
-    public constructor(players: PlayerManager)
+    private readonly audioPlayer: Player;
+    public timeout?: NodeJS.Timeout;
+    public constructor(players: PlayerManager, audioPlayer: Player)
     {
         this.players = players;
+        this.audioPlayer = audioPlayer;
     }
 
     public createConnection(options: CreateVoiceConnectionOptions & JoinVoiceChannelOptions): VoiceConnection
@@ -45,13 +50,21 @@ export default class ConnectionManager
     private onConnecting(): void
     {
         console.log("Connected.");
+        this.timeout = setTimeout(() => {
+            if(!this.audioPlayer.playing) {
+                if(this.connection)
+                {
+                    this.audioPlayer.options.textChannel.send({ embeds: [Embeds.defaultEmbed("I left the voice channel because the song wasn't playing.")]});
+                    this.connection!.disconnect();
+                }
+            }
+        }, 35000);
     }
     private onDisconnected(): void
     {
         console.log("Disconnected");
         this.connection!.destroy();
         this.players.deletePlayer(this.connection!.joinConfig.guildId);
-        
     }
     //#endregion
 }

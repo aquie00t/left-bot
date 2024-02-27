@@ -14,7 +14,7 @@ export default class InteractionHandler extends HandlerBase {
         super(client);
 
         this.commands = new Collection();
-        this.players = new PlayerManager();
+        this.players = new PlayerManager(this.client);
     }
 
     private async loadedCommands(): Promise<Collection<string, CommandBase>> {

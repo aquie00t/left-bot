@@ -1,13 +1,15 @@
 import { Collection } from "discord.js";
 import Player from "../Player";
 import IPlayerOptions from "../interfaces/IPlayerOptions";
+import LeftClient from "../LeftClient";
 
 export default class PlayerManager 
 {
     private readonly players: Collection<string, Player>;
-
-    constructor()
+    private readonly client: LeftClient;
+    constructor(client: LeftClient)
     {
+        this.client = client;
         this.players = new Collection();
     }
 
@@ -27,7 +29,7 @@ export default class PlayerManager
     {
         if(this.hasPlayer(guildId))
             return this.getPlayer(guildId);
-        this.players.set(guildId, new Player(this, options));
+        this.players.set(guildId, new Player(this.client, this, options));
         console.log("Created Player.");
         return this.getPlayer(guildId);
     }
