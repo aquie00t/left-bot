@@ -55,7 +55,9 @@ export default class InteractionHandler extends HandlerBase {
     private async onInteractionCreate(interaction: Interaction): Promise<void>
     {
         if(!interaction.isCommand())
+        {
             return;
+        }
 
         const command = this.commands.get(interaction.commandName)!;
 

@@ -119,4 +119,9 @@ export default class Player
         this.queue.trackIndex -= 2;
         this.audioPlayer.discordPlayer.stop();
     }
+
+    public get queueList(): Track[]
+    {
+        return this.queue.tracks;
+    }
 }

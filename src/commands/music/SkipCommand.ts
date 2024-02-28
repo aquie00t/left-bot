@@ -4,32 +4,48 @@ import LeftClient from "../../structures/LeftClient";
 import PlayerManager from "../../structures/managers/PlayerManager";
 import Embeds from "../../structures/utils/Embeds";
 
-export default class SkipCommand extends CommandBase
-{
+/**
+ * Command for moving to the previous track in the queue.
+ */
+export default class SkipCommand extends CommandBase {
     public readonly data: SlashCommandBuilder;
 
-    public constructor(client: LeftClient, players: PlayerManager)
-    {
+    /**
+     * Initializes the SkipCommand instance.
+     * @param {LeftClient} client - The LeftClient instance.
+     * @param {PlayerManager} players - The PlayerManager instance.
+     */
+    public constructor(client: LeftClient, players: PlayerManager) {
         super(client, players);
 
+        // Defining the slash command data
         this.data = new SlashCommandBuilder()
-            .setName("skip")
-            .setDescription("It moves to the next row and plays a song if there is one.");
+            .setName("back")
+            .setDescription("It moves to the previous row and plays a song if there is one.");
 
+        // Setting voiceChannel flag to true to indicate that the command requires a voice channel
         this.voiceChannel = true;
     }
 
-    public async execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void>
-    {
-        if(!this.players.hasPlayer(interaction.guildId!)){
-            await interaction.reply({ embeds: [Embeds.errorEmbed("There is no player anyway.")]});
+    /**
+     * Executes the skip command.
+     * @param {ChatInputCommandInteraction<CacheType>} interaction - The interaction object.
+     */
+    public async execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
+        // Checking if there is an active player in the guild
+        if (!this.players.hasPlayer(interaction.guildId!)) {
+            // If not, replying with an error message and exiting the function
+            await interaction.reply({ embeds: [Embeds.errorEmbed("There is no player anyway.")] });
             return;
         }
 
+        // Retrieving the player for the guild
         const player = this.players.getPlayer(interaction.guildId!);
 
-        player.skip();
+        // Moving to the previous track in the queue
+        player.back();
 
-        await interaction.reply({ embeds: [Embeds.defaultEmbed("Skipped.")]});
+        // Replying with a message indicating that the track has been skipped
+        await interaction.reply({ embeds: [Embeds.defaultEmbed("Backed.")] });
     }
 }
