@@ -20,8 +20,8 @@ export default class SkipCommand extends CommandBase {
 
         // Defining the slash command data
         this.data = new SlashCommandBuilder()
-            .setName("back")
-            .setDescription("It moves to the previous row and plays a song if there is one.");
+            .setName("skip")
+            .setDescription("Moves to the next line and plays the song if available.");
 
         // Setting voiceChannel flag to true to indicate that the command requires a voice channel
         this.voiceChannel = true;
@@ -43,9 +43,9 @@ export default class SkipCommand extends CommandBase {
         const player = this.players.getPlayer(interaction.guildId!);
 
         // Moving to the previous track in the queue
-        player.back();
+        player.skip();
 
         // Replying with a message indicating that the track has been skipped
-        await interaction.reply({ embeds: [Embeds.defaultEmbed("Backed.")] });
+        await interaction.reply({ embeds: [Embeds.defaultEmbed("Skipped.")] });
     }
 }

@@ -52,7 +52,7 @@ export default class QueueCommand extends CommandBase {
             for (let i = 0; i < queue.length; i += pageSize) {
                 const pageTracks = queue.slice(i, i + pageSize); // Get tracks for the current page
                 const startingTrackNumber = i + 1; // Calculate the starting track number for the page
-                const pageContent = pageTracks.map((track, index) => `** ▫️ ${startingTrackNumber + index} - ${track.title}**`).join('\n'); // Generate page content with track numbers
+                const pageContent = pageTracks.map((track, index) => `** ▫️ ${startingTrackNumber + index} - \` ${track.title} \`**`).join('\n'); // Generate page content with track numbers
                 pages.push(pageContent); // Add page content to the pages array
             }
         
