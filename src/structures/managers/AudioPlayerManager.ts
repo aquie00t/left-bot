@@ -51,8 +51,10 @@ export default class AudioPlayerManager {
     //#region Events
     private async onIdle(): Promise<void> {
         this.queueManager.trackIndex += 1;
-        if(this.deletedMessage)
+        if(this.deletedMessage != undefined)
+        {
             await this.deletedMessage.delete();
+        }
 
         if(this.queueManager.hasTrack(this.queueManager.trackIndex))
         {

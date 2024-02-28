@@ -6,8 +6,10 @@ import { Track } from "../types/query";
 import AudioPlayerManager from "./managers/AudioPlayerManager";
 import QueueManager from "./managers/QueueManager";
 import IPlayerOptions from "./interfaces/IPlayerOptions";
-import VoiceStateHandler from "./handlers/VoiceStateHandler";
 import LeftClient from "./LeftClient";
+import play from 'play-dl';
+import { VoiceChannel } from "discord.js";
+import Embeds from "./utils/Embeds";
 
 export default class Player
 {
@@ -16,8 +18,9 @@ export default class Player
     private readonly audioPlayer: AudioPlayerManager;
     private readonly queue: QueueManager;
     public readonly options: IPlayerOptions;
-    private readonly voiceStateHandler: VoiceStateHandler;
     private readonly client: LeftClient;
+    private readonly queryManager: QueryManager;
+    public aloneTimeInterval?: NodeJS.Timeout; 
     public constructor(client: LeftClient, players: PlayerManager, options: IPlayerOptions)
     {
         this.players = players;
@@ -26,9 +29,8 @@ export default class Player
         this.queue = new QueueManager;
         this.connection = new ConnectionManager(this.players, this);
         this.audioPlayer = new AudioPlayerManager(this.queue, options, this.connection);
-        this.voiceStateHandler = new VoiceStateHandler(this.client, this);
-
-        this.voiceStateHandler.initialize();
+        this.queryManager = new QueryManager();
+        this.aloneTimeInterval = undefined;
     }
 
     public join(config: CreateVoiceConnectionOptions & JoinVoiceChannelOptions): void
@@ -36,6 +38,22 @@ export default class Player
         this.connection.createConnection(config);
         this.audioPlayer.createDiscordAudioPlayer();
         this.connection.subsribe(this.audioPlayer.discordPlayer);
+
+        this.aloneTimeInterval = setInterval(async() => {
+            if(this.connection.connection)
+            {
+            
+                const botVoiceChannel = this.client.channels.cache.get(this.connection.connection.joinConfig.channelId!) as VoiceChannel;
+                if(botVoiceChannel)
+                {
+                    if(botVoiceChannel.members.size == 1) {
+                        await this.options.textChannel.send({ embeds: [Embeds.defaultEmbed("I left because I was alone in the voice channel.")]});
+                        this.connection.connection.disconnect();
+                    }
+                }
+            }
+            
+        }, 50000);
     }
 
     public hasConnect(guildId: string): boolean
@@ -55,7 +73,17 @@ export default class Player
         await this.audioPlayer.play(track);
     }
     public async search(query: string): Promise<Track[]> {
-        return (await QueryManager.youtubeQuery(query));
+        const validate = await play.validate(query);
+
+        switch(validate)
+        {
+            case "yt_playlist":
+            case "yt_video":
+            case "search":
+                return await this.queryManager.youtubeQuery(query);
+            default: 
+                return [];
+        }
     }
 
     public addTrack(track: Track): void

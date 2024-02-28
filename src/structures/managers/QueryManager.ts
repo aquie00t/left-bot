@@ -1,15 +1,9 @@
 /* eslint-disable no-case-declarations */
-import play from 'play-dl';
+import play, { SpotifyAlbum, SpotifyTrack } from 'play-dl';
 import { Track } from '../../types/query';
-
 export default class QueryManager 
 {
-    public constructor()
-    {
-
-    }
-
-    public static async youtubeQuery(url: string): Promise<Track[]>
+    public async youtubeQuery(url: string): Promise<Track[]>
     {
         const validate = play.yt_validate(url);
 
@@ -44,6 +38,48 @@ export default class QueryManager
                 return track_array;
             default:
                 return [];
-        }    
+        }
+    }
+
+    public async spotifyQuery(url: string): Promise<Track[]>
+    {
+        const validate = play.sp_validate(url);
+
+        switch(validate)
+        {
+            case "playlist":
+                const sp_playlist = await play.spotify(url) as SpotifyAlbum;
+                const sp_playlist_tracks = await sp_playlist.all_tracks();
+                const sp_playlist_result = sp_playlist_tracks.map((spotify_track) => {
+                    return {
+                        source: "spotify",
+                        title: spotify_track.name,
+                        url: spotify_track.url
+                    } as Track;
+                });
+
+                return sp_playlist_result;
+            case "album":
+                const sp_album = await play.spotify(url) as SpotifyAlbum;
+                const sp_album_tracks = await sp_album.all_tracks();
+                const sp_album_result = sp_album_tracks.map((spotify_track) => {
+                    return {
+                        source: "spotify",
+                        title: spotify_track.name,
+                        url: spotify_track.url
+                    } as Track;
+                });
+
+                return sp_album_result;
+            case "track":
+                const sp_track = await play.spotify(url) as SpotifyTrack;
+                return [{
+                    source: "spotify",
+                    title: sp_track.name,
+                    url: sp_track.url
+                }];
+            default:
+                return [];
+        }
     }
 }

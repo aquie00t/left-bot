@@ -1,7 +1,6 @@
 import { Client, Events, IntentsBitField } from 'discord.js';
 import InteractionHandler from './handlers/InteractionHandler';
 import ILeftConfig from './interfaces/ILeftClientConfig';
-
 export default class LeftClient extends Client
 {
     private readonly interactionHandler: InteractionHandler;

@@ -65,6 +65,7 @@ export default class ConnectionManager
         console.log("Disconnected");
         this.connection!.destroy();
         this.players.deletePlayer(this.connection!.joinConfig.guildId);
+        clearTimeout(this.audioPlayer.aloneTimeInterval);
     }
     //#endregion
 }
