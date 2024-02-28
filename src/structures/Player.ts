@@ -98,11 +98,25 @@ export default class Player
 
     public async playFromQueue(trackIndex: number = this.queue.trackIndex): Promise<void>
     {
-        const track = this.queue.tracks[trackIndex];
+        if(this.queue.hasTrack(trackIndex))
+        {
+            await this.audioPlayer.play(this.queue.tracks[trackIndex]);
+            return;
+        }
+        
+        this.queue.trackIndex = this.queue.tracks.length - 1;
+        await this.audioPlayer.play(this.queue.tracks[this.queue.trackIndex]);
+        
+    }
 
-        if(!track)
-            throw "Track Undefined!";
+    public async skip(): Promise<void>
+    {
+        this.audioPlayer.discordPlayer.stop();
+    }
 
-        return await this.play(track);
+    public async back(): Promise<void> 
+    {
+        this.queue.trackIndex -= 2;
+        this.audioPlayer.discordPlayer.stop();
     }
 }
