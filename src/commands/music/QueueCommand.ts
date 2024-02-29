@@ -45,7 +45,7 @@ export default class QueueCommand extends CommandBase {
         const queue = player.queueList;
         
         // Function to create pages for pagination
-        const createPages = (): string[] => {
+        const createPages = (): string[] => {   
             const pageSize = 10; // Number of tracks per page
             const pages: string[] = [];
             

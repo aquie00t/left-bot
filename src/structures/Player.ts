@@ -1,4 +1,4 @@
-import { CreateVoiceConnectionOptions, JoinVoiceChannelOptions } from "@discordjs/voice";
+import { AudioPlayerStatus, CreateVoiceConnectionOptions, JoinVoiceChannelOptions } from "@discordjs/voice";
 import PlayerManager from "./managers/PlayerManager";
 import ConnectionManager from "./managers/ConnectionManager";
 import QueryManager from "./managers/QueryManager";
@@ -21,6 +21,7 @@ export default class Player
     private readonly client: LeftClient;
     private readonly queryManager: QueryManager;
     public aloneTimeInterval?: NodeJS.Timeout; 
+    public isStoped: boolean;
     public constructor(client: LeftClient, players: PlayerManager, options: IPlayerOptions)
     {
         this.players = players;
@@ -28,9 +29,10 @@ export default class Player
         this.client = client;
         this.queue = new QueueManager;
         this.connection = new ConnectionManager(this.players, this);
-        this.audioPlayer = new AudioPlayerManager(this.queue, options, this.connection);
+        this.audioPlayer = new AudioPlayerManager(this.queue, options, this.connection, this);
         this.queryManager = new QueryManager();
         this.aloneTimeInterval = undefined;
+        this.isStoped = false;
     }
 
     public join(config: CreateVoiceConnectionOptions & JoinVoiceChannelOptions): void
@@ -111,17 +113,55 @@ export default class Player
 
     public async skip(): Promise<void>
     {
-        this.audioPlayer.discordPlayer.stop();
+        this.isStoped = false;
+        if(this.audioPlayer.playing)
+        {
+            this.audioPlayer.discordPlayer.stop();
+            return;
+        }
+        
+        this.audioPlayer.discordPlayer.emit(AudioPlayerStatus.Idle);
+        return;
     }
 
     public async back(): Promise<void> 
     {
+        this.isStoped = false;
         this.queue.trackIndex -= 2;
-        this.audioPlayer.discordPlayer.stop();
+        if(this.audioPlayer.playing)
+        {
+            this.audioPlayer.discordPlayer.stop();
+            return;
+        }
+        
+        this.audioPlayer.discordPlayer.emit(AudioPlayerStatus.Idle);
+        return;
     }
 
     public get queueList(): Track[]
     {
         return this.queue.tracks;
+    }
+
+    public jump(index: number): void
+    {
+        this.isStoped = false;
+        //AudioPlayer'da zaten 1 eklediği için 1 eksik veriyoruz.
+        this.queue.trackIndex = index - 2;
+        //AudioPlayer Idle olayı tetiklenmesi için stop yapıyoruz.
+        if(this.audioPlayer.playing)
+        {
+            this.audioPlayer.discordPlayer.stop();
+            return;
+        }
+        
+        this.audioPlayer.discordPlayer.emit(AudioPlayerStatus.Idle);
+        return;
+    }
+
+    public stop(): void 
+    {
+        this.isStoped = true;
+        this.audioPlayer.discordPlayer.stop();
     }
 }

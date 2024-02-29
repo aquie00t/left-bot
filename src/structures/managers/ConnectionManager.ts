@@ -62,7 +62,6 @@ export default class ConnectionManager
     }
     private onDisconnected(): void
     {
-        console.log("Disconnected");
         this.connection!.destroy();
         this.players.deletePlayer(this.connection!.joinConfig.guildId);
         clearTimeout(this.audioPlayer.aloneTimeInterval);

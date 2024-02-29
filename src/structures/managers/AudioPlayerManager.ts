@@ -6,6 +6,7 @@ import IPlayerOptions from "../interfaces/IPlayerOptions";
 import Embeds from "../utils/Embeds";
 import { Message } from "discord.js";
 import ConnectionManager from "./ConnectionManager";
+import Player from "../Player";
 
 export default class AudioPlayerManager {
     public discordPlayer!: AudioPlayer;
@@ -14,11 +15,13 @@ export default class AudioPlayerManager {
     private deletedMessage?: Message;
     private connection: ConnectionManager;
     private idleTimeOut?: NodeJS.Timeout;
-    public constructor(queueManager: QueueManager, options: IPlayerOptions, connection: ConnectionManager)
+    private readonly player: Player;
+    public constructor(queueManager: QueueManager, options: IPlayerOptions, connection: ConnectionManager, player: Player)
     {
         this.connection = connection;
         this.queueManager = queueManager;
         this.options = options;
+        this.player = player;
     }
     public createDiscordAudioPlayer(): AudioPlayer
     {
@@ -48,23 +51,9 @@ export default class AudioPlayerManager {
     {
         return this.discordPlayer.state.status == AudioPlayerStatus.Playing;
     } 
-    //#region Events
-    private async onIdle(): Promise<void> {
-        console.log("idle");
-        this.queueManager.trackIndex += 1;
-        if(this.deletedMessage != undefined)
-        {
-            await this.deletedMessage.delete();
-        }
 
-        if(this.queueManager.hasTrack(this.queueManager.trackIndex))
-        {
-            const track = this.queueManager.tracks[this.queueManager.trackIndex];
-            this.play(track);
-
-            this.deletedMessage = await this.options.textChannel.send({ embeds: [Embeds.nowPlayingEmbed(track.title)]});
-        }
-
+    public createIdleTimeOut(): void 
+    {
         this.idleTimeOut = setTimeout(async() => {
             if(this.connection.connection)
             {
@@ -76,14 +65,41 @@ export default class AudioPlayerManager {
             }
         }, 50000);
     }
+    //#region Events
+    private async onIdle(): Promise<void> {
+        if(this.deletedMessage)
+            if(this.deletedMessage.deletable)
+                await this.deletedMessage.delete().catch(e => console.error(e));
+        
+        if(!this.player.isStoped)
+        {
+            this.queueManager.trackIndex += 1;
+            if(this.queueManager.hasTrack(this.queueManager.trackIndex))
+            {
+                const track = this.queueManager.tracks[this.queueManager.trackIndex];
+                this.play(track);
+    
+                this.deletedMessage = await this.options.textChannel.send({ embeds: [Embeds.nowPlayingEmbed(track.title)]});
+            }
+    
+        }
+       
+        if(!this.idleTimeOut)
+            this.createIdleTimeOut();
+    }
 
     private onPlaying(): void
     {
-       if(this.connection.timeout)
+        this.player.isStoped = false;
+        if(this.connection.timeout)
+        {
+            console.log("dele");
             clearTimeout(this.connection.timeout);
-       if(this.idleTimeOut)
+        }
+        if(this.idleTimeOut) {
+            console.log("Deleted idle timeout");
             clearTimeout(this.idleTimeOut);
-       
+        }  
     }
     //#endregion
 
