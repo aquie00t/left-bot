@@ -1,16 +1,18 @@
 /* eslint-disable no-case-declarations */
 import play, { SpotifyAlbum, SpotifyTrack } from 'play-dl';
 import { Track } from '../../types/query';
+import tokenOptions from '../../../tokenOptions.json';
+
 export default class QueryManager 
 {
     public async setToken(): Promise<void>
     {
         return await play.setToken({
             spotify: {
-                client_id: "a2e7585c4afd401e8c04300c9bff7e1c",
-                client_secret: "0699bcf8439940e995de5dd05223cdf0",
-                market: "es",
-                refresh_token: "Bearer BQAgZ7WG7lDLQ_KYQkPhWHzFqV5f94qA7DgEcKGudl8CxlWZB0-hi2ceueoU_SlMdwXCvLQQd2VPh3sxec1Oyu_VfOtqFAkaCesV3jvg0OY8BOKM8U0"
+                client_id: tokenOptions.spotify.client_id,
+                client_secret: tokenOptions.spotify.client_secret,
+                market: tokenOptions.spotify.market,
+                refresh_token: tokenOptions.spotify.refresh_token
             }
         });
     }
