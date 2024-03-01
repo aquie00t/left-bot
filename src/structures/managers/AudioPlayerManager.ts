@@ -92,14 +92,9 @@ export default class AudioPlayerManager {
     {
         this.player.isStoped = false;
         if(this.connection.timeout)
-        {
-            console.log("dele");
             clearTimeout(this.connection.timeout);
-        }
-        if(this.idleTimeOut) {
-            console.log("Deleted idle timeout");
+        if(this.idleTimeOut) 
             clearTimeout(this.idleTimeOut);
-        }  
     }
     //#endregion
 

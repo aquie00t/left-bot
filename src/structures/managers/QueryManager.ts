@@ -3,6 +3,17 @@ import play, { SpotifyAlbum, SpotifyTrack } from 'play-dl';
 import { Track } from '../../types/query';
 export default class QueryManager 
 {
+    public async setToken(): Promise<void>
+    {
+        return await play.setToken({
+            spotify: {
+                client_id: "a2e7585c4afd401e8c04300c9bff7e1c",
+                client_secret: "0699bcf8439940e995de5dd05223cdf0",
+                market: "es",
+                refresh_token: "Bearer BQAgZ7WG7lDLQ_KYQkPhWHzFqV5f94qA7DgEcKGudl8CxlWZB0-hi2ceueoU_SlMdwXCvLQQd2VPh3sxec1Oyu_VfOtqFAkaCesV3jvg0OY8BOKM8U0"
+            }
+        });
+    }
     public async youtubeQuery(url: string): Promise<Track[]>
     {
         const validate = play.yt_validate(url);

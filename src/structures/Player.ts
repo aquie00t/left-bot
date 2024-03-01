@@ -1,4 +1,4 @@
-import { AudioPlayerStatus, CreateVoiceConnectionOptions, JoinVoiceChannelOptions } from "@discordjs/voice";
+import { AudioPlayerStatus, CreateVoiceConnectionOptions, JoinVoiceChannelOptions, createAudioResource } from "@discordjs/voice";
 import PlayerManager from "./managers/PlayerManager";
 import ConnectionManager from "./managers/ConnectionManager";
 import QueryManager from "./managers/QueryManager";
@@ -35,7 +35,7 @@ export default class Player
         this.isStoped = false;
     }
 
-    public join(config: CreateVoiceConnectionOptions & JoinVoiceChannelOptions): void
+    public async join(config: CreateVoiceConnectionOptions & JoinVoiceChannelOptions): Promise<void>
     {
         this.connection.createConnection(config);
         this.audioPlayer.createDiscordAudioPlayer();
@@ -56,6 +56,8 @@ export default class Player
             }
             
         }, 50000);
+
+        await this.queryManager.setToken();
     }
 
     public hasConnect(guildId: string): boolean
@@ -83,6 +85,10 @@ export default class Player
             case "yt_video":
             case "search":
                 return await this.queryManager.youtubeQuery(query);
+            case "sp_album":
+            case "sp_playlist":
+            case "sp_track":
+                return await this.queryManager.spotifyQuery(query);
             default: 
                 return [];
         }
@@ -163,5 +169,24 @@ export default class Player
     {
         this.isStoped = true;
         this.audioPlayer.discordPlayer.stop();
+    }
+
+    public async seek(second: number): Promise<void>
+    {
+        if(this.queue.hasTrack(this.queue.trackIndex))
+        {
+            const track = this.queue.tracks[this.queue.trackIndex];
+
+            const source = await play.stream(track.url, { seek: second });
+
+            const resource = createAudioResource(source.stream, {
+                inputType: source.type
+            });
+
+            this.audioPlayer.discordPlayer.play(resource);
+            return;
+        }
+
+        throw "No song is currently playing.";
     }
 }

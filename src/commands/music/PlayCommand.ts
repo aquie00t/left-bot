@@ -49,7 +49,7 @@ export default class PlayCommand extends CommandBase {
         if (!player.hasConnect(interaction.guildId!)) {
             // If not, join the voice channel of the member who used the command
             const memberVoiceChannel = (interaction.member as GuildMember).voice.channel!;
-            player.join({
+            await player.join({
                 channelId: memberVoiceChannel.id,
                 guildId: memberVoiceChannel.guildId,
                 adapterCreator: memberVoiceChannel.guild.voiceAdapterCreator

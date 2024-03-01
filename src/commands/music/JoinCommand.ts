@@ -48,7 +48,7 @@ export default class JoinCommand extends CommandBase {
         }
 
         // Joining the member's voice channel
-        player.join({
+        await player.join({
             channelId: memberVoiceChannel.id,
             guildId: memberVoiceChannel.guildId,
             adapterCreator: memberVoiceChannel.guild.voiceAdapterCreator
