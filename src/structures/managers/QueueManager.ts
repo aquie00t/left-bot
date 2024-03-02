@@ -20,4 +20,21 @@ export default class QueueManager {
     {
         return index >= 0 && index < this.tracks.length;
     }
+
+    public removeTrack(index: number): Track | undefined
+    {
+        if(this.hasTrack(index))
+        {   
+            const removetedTrack = this.tracks.splice(index - 1, 1)[0];
+            return removetedTrack;
+        }
+
+        return undefined;
+        
+    }
+
+    public clear(): void
+    {
+        this.tracks = [];
+    }
 }

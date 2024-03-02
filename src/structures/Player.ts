@@ -189,4 +189,14 @@ export default class Player
 
         throw "No song is currently playing.";
     }
+
+    public removeTrack(index: number): Track | undefined
+    {
+        return this.queue.removeTrack(index);
+    }
+
+    public clear(): void
+    {
+        return this.queue.clear();
+    }
 }
