@@ -199,4 +199,12 @@ export default class Player
     {
         return this.queue.clear();
     }
+
+    public pause(): boolean {
+        return this.audioPlayer.discordPlayer.pause();
+    }
+
+    public resume(): boolean {
+        return this.audioPlayer.discordPlayer.unpause();
+    }    
 }
