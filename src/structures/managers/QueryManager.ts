@@ -16,7 +16,7 @@ export default class QueryManager
             }
         });
     }
-    public async youtubeQuery(url: string): Promise<Track[]>
+    public async youtubeQuery(url: string): Promise<Track[]>    
     {
         const validate = play.yt_validate(url);
 
