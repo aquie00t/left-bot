@@ -1,1 +1,1 @@
-## Discord Music Bot
+## Discord Left Music Bot

@@ -1,0 +1,1 @@
+export type repeat_modes = "default"| "queue" | "track";

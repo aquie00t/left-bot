@@ -7,6 +7,7 @@ import Embeds from "../utils/Embeds";
 import { Message } from "discord.js";
 import ConnectionManager from "./ConnectionManager";
 import Player from "../Player";
+import { QueueRepeatMode } from "../interfaces/enums/QueueRepeatMode";
 
 export default class AudioPlayerManager {
     public discordPlayer!: AudioPlayer;
@@ -83,7 +84,16 @@ export default class AudioPlayerManager {
         
         if(!this.player.isStoped)
         {
-            this.queueManager.trackIndex += 1;
+            if(this.player.repeatMode == QueueRepeatMode.Default)
+                this.queueManager.trackIndex += 1;
+            else if(this.player.repeatMode == QueueRepeatMode.QueueLoop)
+            {
+                if(this.queueManager.hasTrack(this.queueManager.trackIndex + 1))
+                    this.queueManager.trackIndex += 1;
+                else
+                    this.queueManager.trackIndex = 0;
+            }
+            
             if(this.queueManager.hasTrack(this.queueManager.trackIndex))
             {
                 const track = this.queueManager.tracks[this.queueManager.trackIndex];

@@ -10,6 +10,7 @@ import LeftClient from "./LeftClient";
 import play from 'play-dl';
 import { VoiceChannel } from "discord.js";
 import Embeds from "./utils/Embeds";
+import { QueueRepeatMode } from "./interfaces/enums/QueueRepeatMode";
 
 export default class Player
 {
@@ -22,6 +23,7 @@ export default class Player
     private readonly queryManager: QueryManager;
     public aloneTimeInterval?: NodeJS.Timeout; 
     public isStoped: boolean;
+    public repeatMode: QueueRepeatMode;
     public constructor(client: LeftClient, players: PlayerManager, options: IPlayerOptions)
     {
         this.players = players;
@@ -33,6 +35,7 @@ export default class Player
         this.queryManager = new QueryManager();
         this.aloneTimeInterval = undefined;
         this.isStoped = false;
+        this.repeatMode = QueueRepeatMode.Default;
     }
 
     public async join(config: CreateVoiceConnectionOptions & JoinVoiceChannelOptions): Promise<void>
@@ -114,7 +117,6 @@ export default class Player
         
         this.queue.trackIndex = this.queue.tracks.length - 1;
         await this.audioPlayer.play(this.queue.tracks[this.queue.trackIndex]);
-        
     }
 
     public async skip(): Promise<void>
@@ -152,9 +154,7 @@ export default class Player
     public jump(index: number): void
     {
         this.isStoped = false;
-        //AudioPlayer'da zaten 1 eklediği için 1 eksik veriyoruz.
         this.queue.trackIndex = index - 2;
-        //AudioPlayer Idle olayı tetiklenmesi için stop yapıyoruz.
         if(this.audioPlayer.playing)
         {
             this.audioPlayer.discordPlayer.stop();
@@ -207,4 +207,9 @@ export default class Player
     public resume(): boolean {
         return this.audioPlayer.discordPlayer.unpause();
     }    
+
+    public setRepeatMode(type: QueueRepeatMode): void
+    {
+        this.repeatMode = type;
+    }
 }
