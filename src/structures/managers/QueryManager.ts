@@ -28,14 +28,16 @@ export default class QueryManager
                 return [{
                     title: searched[0].title!,
                     url: searched[0].url,
-                    source: "youtube"
+                    source: "youtube",
+                    stream_url: searched[0].url
                 }];
             case "video":
                 const video = await play.video_info(url);
                 return [{
                     title: video.video_details.title!,
                     url: video.video_details.url,
-                    source: "youtube"
+                    source: "youtube",
+                    stream_url: video.video_details.url
                 }];
             case "playlist":
                 const yt_playlist = await play.playlist_info(url);
@@ -44,7 +46,8 @@ export default class QueryManager
                     return {
                         title: youtube_video.title!,
                         url: youtube_video.url,
-                        source: "youtube"
+                        source: "youtube",
+                        stream_url: youtube_video.url
                     };
                 }) as Track[];
 
@@ -68,7 +71,7 @@ export default class QueryManager
                         source: "spotify",
                         title: spotify_track.name,
                         url: spotify_track.url,
-                        sp_data: `${spotify_track.artists[0].name} ${spotify_track.name}`
+                        sp_data: `${spotify_track.artists[0].name} ${spotify_track.name}`,
                     } as Track;
                 });
 

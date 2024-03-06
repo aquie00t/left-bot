@@ -127,7 +127,6 @@ export default class Player
             this.audioPlayer.discordPlayer.stop();
             return;
         }
-        
         this.audioPlayer.discordPlayer.emit(AudioPlayerStatus.Idle);
         return;
     }
@@ -175,10 +174,10 @@ export default class Player
     {
         if(this.queue.hasTrack(this.queue.trackIndex))
         {
+
             const track = this.queue.tracks[this.queue.trackIndex];
-
-            const source = await play.stream(track.url, { seek: second });
-
+            const source = await play.stream(track.stream_url!, { seek: second });
+            
             const resource = createAudioResource(source.stream, {
                 inputType: source.type
             });

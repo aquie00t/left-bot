@@ -1,6 +1,6 @@
 import { AudioPlayer, AudioPlayerStatus, createAudioPlayer, createAudioResource } from "@discordjs/voice";
 import { Track } from "../../types/query";
-import play, { YouTubeVideo } from 'play-dl';
+import play from 'play-dl';
 import QueueManager from "./QueueManager";
 import IPlayerOptions from "../interfaces/IPlayerOptions";
 import Embeds from "../utils/Embeds";
@@ -32,20 +32,23 @@ export default class AudioPlayerManager {
     }
 
     public async play(track: Track): Promise<void>
-    {
-        let playTrack: YouTubeVideo | Track = track;
-        
+    {    
         if(track.source == "spotify")
         {
             if(!track.sp_data)
                 throw new Error("Spotify Data Undefined.");
-            const searched = await play.search(track.sp_data);
-            if(searched.length == 0)
-                throw "No YouTube data compatible with Spotify data was found..";
-            playTrack = searched[0];
-        }
 
-        const stream = await play.stream(playTrack.url);
+            if(!track.stream_url)
+            {
+                //spotify stream create.
+                const searched = await play.search(track.sp_data);
+                if(searched.length == 0)
+                    throw "No YouTube data compatible with Spotify data was found..";
+                track.stream_url = searched[0].url;
+            }
+        }
+  
+        const stream = await play.stream(track.stream_url!);
 
         const resource = createAudioResource(stream.stream, {
             inputType: stream.type
