@@ -42,7 +42,7 @@ export default class Player
     {
         this.connection.createConnection(config);
         this.audioPlayer.createDiscordAudioPlayer();
-        this.connection.subsribe(this.audioPlayer.discordPlayer);
+        this.connection.subscribe(this.audioPlayer.discordPlayer);
 
         this.aloneTimeInterval = setInterval(async() => {
             if(this.connection.connection)

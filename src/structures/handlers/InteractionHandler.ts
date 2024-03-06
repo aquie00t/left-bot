@@ -1,4 +1,4 @@
-import { ApplicationCommand, CacheType, ChatInputCommandInteraction, Collection, Events, GuildMember, Interaction } from "discord.js";
+import { CacheType, ChatInputCommandInteraction, Collection, Events, GuildMember, Interaction } from "discord.js";
 import LeftClient from "../LeftClient";
 import HandlerBase from "../interfaces/base/HandlerBase";
 import fs from 'fs';
@@ -36,7 +36,8 @@ export default class InteractionHandler extends HandlerBase {
         this.client.on(Events.InteractionCreate, this.onInteractionCreate.bind(this));
 
     }
-    public async registerCommands(): Promise<Collection<string, ApplicationCommand>> {
+    public async registerCommands(): Promise<void> {
+        /*
         const testGuild = this.client.guilds.cache.get("1210984678711099552");
 
         if(!testGuild) 
@@ -44,6 +45,13 @@ export default class InteractionHandler extends HandlerBase {
         const commandsDataJSON = this.commands.map((c) => c.data.toJSON());
         
         return await testGuild.commands.set(commandsDataJSON);
+        */
+
+        const commandDataJSON = this.commands.map((c) => c.data.toJSON());
+
+        this.client.guilds.cache.forEach(async g => {
+            await g.commands.set(commandDataJSON);
+        });
     }
 
     public async initialize(): Promise<void> {

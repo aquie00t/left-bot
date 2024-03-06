@@ -3,10 +3,15 @@ import play, { SpotifyAlbum, SpotifyTrack } from 'play-dl';
 import { Track } from '../../types/query';
 import tokenOptions from '../../../tokenOptions.json';
 
-export default class QueryManager 
-{
-    public async setToken(): Promise<void>
-    {
+/**
+ * Class for managing queries.
+ */
+export default class QueryManager {
+    /**
+     * Sets the Spotify API token.
+     * @returns {Promise<void>} - Returns when the operation is complete.
+     */
+    public async setToken(): Promise<void> {
         return await play.setToken({
             spotify: {
                 client_id: tokenOptions.spotify.client_id,
@@ -16,14 +21,19 @@ export default class QueryManager
             }
         });
     }
-    public async youtubeQuery(url: string): Promise<Track[]>    
-    {
+
+    /**
+     * Makes a query for a URL on YouTube.
+     * @param {string} url - The URL to query.
+     * @returns {Promise<Track[]>} - The list of found tracks.
+     */
+    public async youtubeQuery(url: string): Promise<Track[]> {
         const validate = play.yt_validate(url);
 
         switch (validate) {
             case "search":
-                const searched = await play.search(url, { source : { youtube : "video" } });
-                if(searched.length == 0)
+                const searched = await play.search(url, { source: { youtube: "video" } });
+                if (searched.length == 0)
                     return [];
                 return [{
                     title: searched[0].title!,
@@ -57,12 +67,15 @@ export default class QueryManager
         }
     }
 
-    public async spotifyQuery(url: string): Promise<Track[]>
-    {
+    /**
+     * Makes a query for a URL on Spotify.
+     * @param {string} url - The URL to query.
+     * @returns {Promise<Track[]>} - The list of found tracks.
+     */
+    public async spotifyQuery(url: string): Promise<Track[]> {
         const validate = play.sp_validate(url);
 
-        switch(validate)
-        {
+        switch (validate) {
             case "playlist":
                 const sp_playlist = await play.spotify(url) as SpotifyAlbum;
                 const sp_playlist_tracks = await sp_playlist.all_tracks();
