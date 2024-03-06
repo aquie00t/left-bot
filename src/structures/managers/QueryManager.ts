@@ -67,7 +67,8 @@ export default class QueryManager
                     return {
                         source: "spotify",
                         title: spotify_track.name,
-                        url: spotify_track.url
+                        url: spotify_track.url,
+                        sp_data: `${spotify_track.artists[0].name} ${spotify_track.name}`
                     } as Track;
                 });
 
@@ -79,7 +80,8 @@ export default class QueryManager
                     return {
                         source: "spotify",
                         title: spotify_track.name,
-                        url: spotify_track.url
+                        url: spotify_track.url,
+                        sp_data: `${spotify_track.artists[0].name} ${spotify_track.name}`
                     } as Track;
                 });
 
@@ -89,7 +91,8 @@ export default class QueryManager
                 return [{
                     source: "spotify",
                     title: sp_track.name,
-                    url: sp_track.url
+                    url: sp_track.url,
+                    sp_data: `${sp_track.artists[0].name} ${sp_track.name}`
                 }];
             default:
                 return [];

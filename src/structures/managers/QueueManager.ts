@@ -23,9 +23,10 @@ export default class QueueManager {
 
     public removeTrack(index: number): Track | undefined
     {
-        if(this.hasTrack(index))
+        const trackIndex = index - 1;
+        if(this.hasTrack(trackIndex))
         {   
-            const removetedTrack = this.tracks.splice(index - 1, 1)[0];
+            const removetedTrack = this.tracks.splice(trackIndex, 1)[0];
             return removetedTrack;
         }
 

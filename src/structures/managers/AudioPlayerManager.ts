@@ -37,9 +37,11 @@ export default class AudioPlayerManager {
         
         if(track.source == "spotify")
         {
-            const searched = await play.search(track.title);
+            if(!track.sp_data)
+                throw new Error("Spotify Data Undefined.");
+            const searched = await play.search(track.sp_data);
             if(searched.length == 0)
-                throw "not playing.";
+                throw "No YouTube data compatible with Spotify data was found..";
             playTrack = searched[0];
         }
 
@@ -71,8 +73,6 @@ export default class AudioPlayerManager {
                 const inDisconnect = this.connection.connection.disconnect();
                 if(inDisconnect)
                     await this.options.textChannel.send({ embeds: [Embeds.defaultEmbed("I  left the audio channel because I was inactive for a long time.")]});
-                
-                
             }
         }, 50000);
     }

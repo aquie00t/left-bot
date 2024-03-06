@@ -1,5 +1,6 @@
 export type Track = {
     title: string,
     url: string,
-    source: "youtube" | "spotify"
+    source: "youtube" | "spotify",
+    sp_data?: string
 };
