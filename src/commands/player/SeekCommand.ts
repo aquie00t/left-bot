@@ -50,7 +50,7 @@ export default class SeekCommand extends CommandBase {
         await player.seek(second)
             .then(async () => {
                 // If seeking is successful, replying with a success message
-                await interaction.reply({ embeds: [Embeds.defaultEmbed(`The song skipped to the ${second.toString()}th second`)] });
+                await interaction.reply({ embeds: [Embeds.defaultEmbed(`The song skipped to the \`${second.toString()}th\` second`)] });
                 return;
             }).catch(async () => {
                 // If seeking fails, replying with an error message

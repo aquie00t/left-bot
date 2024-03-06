@@ -120,6 +120,4 @@ export default class AudioPlayerManager {
             clearTimeout(this.idleTimeOut);
     }
     //#endregion
-
-
 }
