@@ -1,4 +1,4 @@
-import { CacheType, ChatInputCommandInteraction, Collection, Events, GuildMember, Interaction } from "discord.js";
+import { ApplicationCommand, CacheType, ChatInputCommandInteraction, Collection, Events, GuildMember, GuildResolvable, Interaction } from "discord.js";
 import LeftClient from "../LeftClient";
 import HandlerBase from "../interfaces/base/HandlerBase";
 import fs from 'fs';
@@ -50,14 +50,11 @@ export default class InteractionHandler extends HandlerBase {
     }
 
     /**
-     * Registers commands globally to all guilds the bot is in.
+     * Registers commands globally the bot is in.
      */
-    public async registerCommands(): Promise<void> {
+    public async registerCommands():Promise<Collection<string, ApplicationCommand<{ guild: GuildResolvable; }>> | undefined>{
         const commandDataJSON = this.commands.map((c) => c.data.toJSON());
-
-        this.client.guilds.cache.forEach(async g => {
-            await g.commands.set(commandDataJSON);
-        });
+        return await this.client.application?.commands.set(commandDataJSON);
     }
 
     /**
