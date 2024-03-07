@@ -6,10 +6,18 @@ import CommandBase from "../interfaces/base/CommandBase";
 import PlayerManager from "../managers/PlayerManager";
 import Embeds from "../utils/Embeds";
 
+/**
+ * InteractionHandler class handles incoming interactions such as commands.
+ */
 export default class InteractionHandler extends HandlerBase {
 
     private readonly commands: Collection<string, CommandBase>;
     private readonly players: PlayerManager;
+
+    /**
+     * Constructor for InteractionHandler class.
+     * @param client - The Discord client instance
+     */
     public constructor(client: LeftClient) {
         super(client);
 
@@ -17,36 +25,34 @@ export default class InteractionHandler extends HandlerBase {
         this.players = new PlayerManager(this.client);
     }
 
+    /**
+     * Loads commands from the command folders.
+     * @returns A collection of loaded commands
+     */
     private async loadedCommands(): Promise<Collection<string, CommandBase>> {
         const folders = fs.readdirSync("./src/commands/");
 
         for(const folder of folders) {
             const files = fs.readdirSync(`./src/commands/${folder}`);
             for(const file of files) {
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const command: CommandBase = new (await import(`../../commands/${folder}/${file}`)).default(this.client, this.players);
                 this.commands.set(command.data.name, command); 
-               
             }
         }
         return this.commands;
     }
-    private initializeEvents(): void
-    {
+
+    /**
+     * Initializes event listeners for the client.
+     */
+    private initializeEvents(): void {
         this.client.on(Events.InteractionCreate, this.onInteractionCreate.bind(this));
-
     }
+
+    /**
+     * Registers commands globally to all guilds the bot is in.
+     */
     public async registerCommands(): Promise<void> {
-        /*
-        const testGuild = this.client.guilds.cache.get("1210984678711099552");
-
-        if(!testGuild) 
-            throw "Test Guild Id Invalid.";
-        const commandsDataJSON = this.commands.map((c) => c.data.toJSON());
-        
-        return await testGuild.commands.set(commandsDataJSON);
-        */
-
         const commandDataJSON = this.commands.map((c) => c.data.toJSON());
 
         this.client.guilds.cache.forEach(async g => {
@@ -54,35 +60,35 @@ export default class InteractionHandler extends HandlerBase {
         });
     }
 
+    /**
+     * Initializes the InteractionHandler class.
+     */
     public async initialize(): Promise<void> {
         this.initializeEvents();
         await this.loadedCommands();
     }
 
-    //#region 
-    private async onInteractionCreate(interaction: Interaction): Promise<void>
-    {
-        if(!interaction.isCommand())
-        {
+    /**
+     * Handles incoming interactions.
+     * @param interaction - The received interaction
+     */
+    private async onInteractionCreate(interaction: Interaction): Promise<void> {
+        if(!interaction.isCommand()) {
             return;
         }
 
         const command = this.commands.get(interaction.commandName)!;
 
-        if(command.voiceChannel)
-        {
+        if(command.voiceChannel) {
             const memberVoiceChannel = (interaction.member as GuildMember).voice.channel;
 
-            if(!memberVoiceChannel)
-            {
+            if(!memberVoiceChannel) {
                 await interaction.reply({ embeds: [Embeds.warnEmbed("Join a voice channel try again.")]});
                 return;
             }
 
-            if(interaction.guild?.members.me?.voice.channel)
-            {
-                if(memberVoiceChannel.id != interaction.guild!.members.me.voice.channel.id)
-                {
+            if(interaction.guild?.members.me?.voice.channel) {
+                if(memberVoiceChannel.id != interaction.guild!.members.me.voice.channel.id) {
                     await interaction.reply({ embeds: [Embeds.warnEmbed("You must be on the same channel as the bot.")]});
                     return;
                 }
@@ -90,6 +96,4 @@ export default class InteractionHandler extends HandlerBase {
         }
         await command.execute(interaction as ChatInputCommandInteraction<CacheType>);
     }
-    //#endregion
-
 }

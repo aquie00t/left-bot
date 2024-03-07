@@ -111,7 +111,7 @@ export default class AudioPlayerManager {
             if (this.deletedMessage.deletable)
                 await this.deletedMessage.delete().catch(e => console.error(e));
 
-        if (!this.player.isStoped) {
+        if (!this.player.isStopped) {
             if (this.player.repeatMode == QueueRepeatMode.Default)
                 this.queueManager.trackIndex += 1;
             else if (this.player.repeatMode == QueueRepeatMode.QueueLoop) {
@@ -137,7 +137,7 @@ export default class AudioPlayerManager {
      * Event handler for when the player starts playing.
      */
     private onPlaying(): void {
-        this.player.isStoped = false;
+        this.player.isStopped = false;
         if (this.connection.timeout)
             clearTimeout(this.connection.timeout);
         if (this.idleTimeOut)
