@@ -1,8 +1,8 @@
 ## Help and Support Information
 
 ### Support
-- If you encounter any issues, please contact us via our [Support Server](support_server_link).
-- You can also visit the [Documentation](documentation_link) page for assistance.
+- If you encounter any issues, please contact us via our [Support Server](https://discord.gg/DwYZ5wYcX2).
+- You can also visit the [Documentation](https://github.com/aquie00t/left-bot/tree/main/docs/commands) page for assistance.
 
 ### Frequently Asked Questions
 - **Q: Why is the bot not working?**
