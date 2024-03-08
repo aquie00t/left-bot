@@ -25,7 +25,6 @@
   "homepage": "https://github.com/aquie00t/left-bot#readme",
   "dependencies": {
     "@discordjs/voice": "^0.16.1",
-    "axios": "^1.6.7",
     "discord.js": "^14.12.1",
     "dotenv": "^16.4.5",
     "eslint": "^8.57.0",

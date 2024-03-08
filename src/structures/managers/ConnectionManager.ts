@@ -1,4 +1,4 @@
-import { AudioPlayer, CreateVoiceConnectionOptions, JoinVoiceChannelOptions, PlayerSubscription, VoiceConnection, VoiceConnectionStatus, getVoiceConnection, joinVoiceChannel } from "@discordjs/voice";
+import { AudioPlayer, CreateVoiceConnectionOptions, JoinVoiceChannelOptions, PlayerSubscription, VoiceConnection, VoiceConnectionStatus, entersState, getVoiceConnection, joinVoiceChannel } from "@discordjs/voice";
 import PlayerManager from "./PlayerManager";
 import Player from "../Player";
 import Embeds from "../utils/Embeds";
@@ -64,10 +64,11 @@ export default class ConnectionManager {
      */
     private initializeEvents(): void {
         if (!this.connection)
-            throw "You cannot fire events when there is no connection.";
+            throw new Error("You cannot fire events when there is no connection.");
 
         this.connection.on(VoiceConnectionStatus.Connecting, this.onConnecting.bind(this));
         this.connection.on(VoiceConnectionStatus.Disconnected, this.onDisconnected.bind(this));
+        
     }
 
     //#region Events
@@ -89,10 +90,17 @@ export default class ConnectionManager {
     /**
      * Event handler for when the connection is disconnected.
      */
-    private onDisconnected(): void {
-        this.connection!.destroy();
-        this.players.deletePlayer(this.connection!.joinConfig.guildId);
-        clearTimeout(this.audioPlayer.aloneTimeInterval);
+    private async onDisconnected(): Promise<void> {
+        try {
+            await Promise.race([
+                entersState(this.connection!, VoiceConnectionStatus.Signalling, 5_000),
+                entersState(this.connection!, VoiceConnectionStatus.Connecting, 5_000)
+            ]);
+        } catch {
+            this.connection!.destroy();
+            this.players.deletePlayer(this.connection!.joinConfig.guildId);
+            clearTimeout(this.audioPlayer.aloneTimeInterval);
+        }
     }
     //#endregion
 }
