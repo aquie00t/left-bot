@@ -56,7 +56,7 @@ export default class LeftClient extends Client {
      * Event handler for when the client is ready.
      */
     private async onReady(): Promise<void> {
-        console.log("Bot is ready!");
+        console.log("Bot Is Ready!");
         await this.interactionHandler.registerCommands();
     }
     //#endregion
