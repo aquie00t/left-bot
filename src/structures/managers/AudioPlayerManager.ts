@@ -1,6 +1,6 @@
-import { AudioPlayer, AudioPlayerStatus, createAudioPlayer, createAudioResource } from "@discordjs/voice";
+import { AudioPlayer, AudioPlayerStatus, AudioResource, createAudioPlayer, createAudioResource } from "@discordjs/voice";
 import { Track } from "../../types/query";
-import play from 'play-dl';
+import play, { SoundCloudStream, YouTubeStream } from 'play-dl';
 import QueueManager from "./QueueManager";
 import IPlayerOptions from "../interfaces/IPlayerOptions";
 import Embeds from "../utils/Embeds";
@@ -20,7 +20,18 @@ export default class AudioPlayerManager {
     private connection: ConnectionManager;
     private idleTimeOut?: NodeJS.Timeout;
     private readonly player: Player;
+    private _volume: number;
 
+    public get volume(): number
+    {
+        return this._volume / 100;
+    }
+    public set volume(level: number)
+    {
+        if(level > 100 || level < 0)
+            throw new Error("volume (0 - 100)");
+        this._volume = level;
+    }
     /**
      * Constructor for AudioPlayerManager.
      * @param {QueueManager} queueManager - The queue manager.
@@ -33,6 +44,7 @@ export default class AudioPlayerManager {
         this.queueManager = queueManager;
         this.options = options;
         this.player = player;
+        this._volume = 10;
     }
 
     /**
@@ -66,11 +78,20 @@ export default class AudioPlayerManager {
 
         const stream = await play.stream(track.stream_url!);
 
-        const resource = createAudioResource(stream.stream, {
-            inputType: stream.type
-        });
-
+        const resource = this.streamToAudioResource(stream);
+        
+        resource.volume!.setVolume(this.volume);
+        
         this.discordPlayer.play(resource);
+    }
+    public streamToAudioResource(stream: YouTubeStream | SoundCloudStream): AudioResource
+    {
+        const resource = createAudioResource(stream.stream, {
+            inputType: stream.type,
+            inlineVolume: true
+        });
+        
+        return resource;
     }
 
     /**

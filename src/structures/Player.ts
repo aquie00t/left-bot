@@ -1,4 +1,4 @@
-import { AudioPlayerStatus, CreateVoiceConnectionOptions, JoinVoiceChannelOptions, createAudioResource } from "@discordjs/voice";
+import { AudioPlayerStatus, CreateVoiceConnectionOptions, JoinVoiceChannelOptions } from "@discordjs/voice";
 import { Track } from "../types/query";
 import LeftClient from "./LeftClient";
 import IPlayerOptions from "./interfaces/IPlayerOptions";
@@ -230,11 +230,10 @@ export default class Player {
             const track = this.queue.tracks[this.queue.trackIndex];
             const source = await play.stream(track.stream_url!, { seek: second });
             
-            const resource = createAudioResource(source.stream, {
-                inputType: source.type
-            });
+            const resource = this.audioPlayer.streamToAudioResource(source);
 
             this.audioPlayer.discordPlayer.play(resource);
+
             return;
         }
 
@@ -284,5 +283,23 @@ export default class Player {
         this.repeatMode = type;
     }
 
+    /**
+     * Sets the volume level for the audio player.
+     * @param level - The volume level to set. Must be a number between 0 and 100.
+     * @returns The updated volume level of the audio player.
+     */
+    public setVolume(level: number): number {
+        // Set the volume level of the audio player
+        this.audioPlayer.volume = level;
+
+        // If the audio player is currently playing, adjust the volume of the resource
+        if (this.audioPlayer.discordPlayer.state.status === AudioPlayerStatus.Playing) {
+            const currentResource = this.audioPlayer.discordPlayer.state.resource;
+            currentResource.volume?.setVolume(this.audioPlayer.volume);
+        }
+        
+        // Return the updated volume level
+        return this.audioPlayer.volume;
+    }
 }
 

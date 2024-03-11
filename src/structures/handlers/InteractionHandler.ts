@@ -54,7 +54,14 @@ export default class InteractionHandler extends HandlerBase {
      */
     public async registerCommands():Promise<Collection<string, ApplicationCommand<{ guild: GuildResolvable; }>> | undefined>{
         const commandDataJSON = this.commands.map((c) => c.data.toJSON());
-        return await this.client.application?.commands.set(commandDataJSON);
+        if(process.env.NODE_ENV === "public")
+            return await this.client.application?.commands.set(commandDataJSON);
+        else {
+            const testGuild = this.client.guilds.cache.get(process.env.TEST_GUILD_ID!);
+            if(!testGuild)
+                throw new Error("Test guild undefined.");
+            return testGuild.commands.set(commandDataJSON);
+        }
     }
 
     /**
@@ -77,6 +84,12 @@ export default class InteractionHandler extends HandlerBase {
         const command = this.commands.get(interaction.commandName)!;
 
         if(command.voiceChannel) {
+            
+            if(!interaction.guild?.members.me?.permissions.has("Administrator"))
+            {
+                await interaction.reply({ embeds: [Embeds.errorEmbed("Check my permissions.")]});
+                return;
+            }
             const memberVoiceChannel = (interaction.member as GuildMember).voice.channel;
 
             if(!memberVoiceChannel) {

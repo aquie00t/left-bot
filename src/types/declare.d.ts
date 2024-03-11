@@ -3,6 +3,8 @@ declare namespace NodeJS {
         DISCORD_TOKEN: string,
         DISCORD_GENERATED_URL: string,
         SUPPORT_SERVER: string,
-        BOT_ID: string
+        BOT_ID: string,
+        NODE_ENV: "test" | "public",
+        TEST_GUILD_ID: string
     }
 }

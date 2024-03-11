@@ -16,7 +16,7 @@ Discord Left Music Bot is a Discord bot that allows users to play music in their
 
 ## Commands
 
-- `/play`: Play music from a YouTube link.
+- `/play`: Play music from a YouTube & Spotify link.
 - `/pause`: Pause the currently playing track.
 - `/resume`: Resume playback if the player is paused.
 - `/seek`: Fast forward the playing track to a certain number of seconds.
