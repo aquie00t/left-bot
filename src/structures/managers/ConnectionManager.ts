@@ -80,7 +80,7 @@ export default class ConnectionManager {
         this.timeout = setTimeout(() => {
             if (!this.audioPlayer.playing) {
                 if (this.connection) {
-                    this.audioPlayer.options.textChannel.send({ embeds: [Embeds.defaultEmbed("I left the voice channel because the song wasn't playing.")] });
+                    this.audioPlayer.options.textChannel?.send({ embeds: [Embeds.defaultEmbed("I left the voice channel because the song wasn't playing.")] });
                     this.connection!.disconnect();
                 }
             }

@@ -118,7 +118,7 @@ export default class AudioPlayerManager {
             if (this.connection.connection) {
                 const inDisconnect = this.connection.connection.disconnect();
                 if (inDisconnect)
-                    await this.options.textChannel.send({ embeds: [Embeds.defaultEmbed("I  left the audio channel because I was inactive for a long time.")] });
+                    await this.options.textChannel?.send({ embeds: [Embeds.defaultEmbed("I  left the audio channel because I was inactive for a long time.")] });
             }
         }, 50000);
     }
@@ -146,7 +146,10 @@ export default class AudioPlayerManager {
                 const track = this.queueManager.tracks[this.queueManager.trackIndex];
                 this.play(track);
 
-                const message = await this.options.textChannel.send({ embeds: [Embeds.nowPlayingEmbed(track.title)] }).catch(() => null);
+                const message = await this.options.textChannel?.send({ embeds: [Embeds.nowPlayingEmbed(track.title)] }).catch(() => {
+                    this.options.textChannel = undefined;
+                    return null;
+                });
                 if(message !== null)
                     this.deletedMessage = message;
             }

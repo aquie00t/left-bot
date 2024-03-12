@@ -60,7 +60,7 @@ export default class Player {
                 const botVoiceChannel = this.client.channels.cache.get(this.connection.connection.joinConfig.channelId!) as VoiceChannel;
                 if(botVoiceChannel) {
                     if(botVoiceChannel.members.size == 1) {
-                        await this.options.textChannel.send({ embeds: [Embeds.defaultEmbed("I left because I was alone in the voice channel.")]});
+                        await this.options.textChannel?.send({ embeds: [Embeds.defaultEmbed("I left because I was alone in the voice channel.")]});
                         this.connection.connection.disconnect();
                     }
                 }

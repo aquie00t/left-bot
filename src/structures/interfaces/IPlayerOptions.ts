@@ -1,6 +1,6 @@
 import { TextBasedChannel } from "discord.js";
 
 export default interface IPlayerOptions {
-    textChannel: TextBasedChannel;
+    textChannel?: TextBasedChannel;
 // eslint-disable-next-line no-extra-semi, semi
 }   
