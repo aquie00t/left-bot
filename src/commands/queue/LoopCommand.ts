@@ -44,7 +44,7 @@ export default class LoopCommand extends CommandBase {
         }
 
         // Get the player for the guild
-        const player = this.players.getPlayer(interaction.guildId!);
+        const player = this.players.getPlayer(interaction.guildId!, interaction.channel!);
 
         // Get the sub-command used by the user
         const sub_command: repeat_modes = interaction.options.getSubcommand(true) as repeat_modes;

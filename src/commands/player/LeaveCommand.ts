@@ -37,7 +37,7 @@ export default class LeaveCommand extends CommandBase {
         }
 
         // Getting the player instance for the guild
-        const player = this.players.getPlayer(interaction.guildId!);
+        const player = this.players.getPlayer(interaction.guildId!, interaction.channel!);
 
         // Checking if the bot is connected to a voice channel in the guild
         if (!player.hasConnect(interaction.guildId!)) {

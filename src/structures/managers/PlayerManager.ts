@@ -1,4 +1,4 @@
-import { Collection } from "discord.js";
+import { Collection, TextBasedChannel } from "discord.js";
 import Player from "../Player";
 import IPlayerOptions from "../interfaces/IPlayerOptions";
 import LeftClient from "../LeftClient";
@@ -25,10 +25,17 @@ export default class PlayerManager {
      * @returns {Player} - The player for the guild.
      * @throws {string} - If there are no players registered to the guild.
      */
-    public getPlayer(guildId: string): Player {
+    public getPlayer(guildId: string, textChannel?: TextBasedChannel): Player {
         if (!this.hasPlayer(guildId))
-            throw "There are no players registered to the guild.";
-        return this.players.get(guildId)!;
+            throw new Error("There are no players registered to the guild.");
+        const player = this.players.get(guildId)!;
+        if(!player.options.textChannel)
+        {
+            if(!textChannel)
+                throw new Error("You must specify a new channel for messages that have been deleted from the channel used when creating the player.");
+            player.options.textChannel = textChannel;
+        }   
+        return player;
     }
 
     /**
@@ -48,9 +55,8 @@ export default class PlayerManager {
      */
     public createPlayer(guildId: string, options: IPlayerOptions): Player {
         if (this.hasPlayer(guildId))
-            return this.getPlayer(guildId);
+            return this.getPlayer(guildId, options.textChannel);
         this.players.set(guildId, new Player(this.client, this, options));
-        console.log("Created Player.");
         return this.getPlayer(guildId);
     }
 
@@ -62,9 +68,8 @@ export default class PlayerManager {
      */
     public deletePlayer(guildId: string): boolean {
         if (this.hasPlayer(guildId)) {
-            console.log("Deleted Player.");
             return this.players.delete(guildId);
         }
-        throw "You cannot delete a player that does not exist.";
+        throw new Error("You cannot delete a player that does not exist.");
     }
 }

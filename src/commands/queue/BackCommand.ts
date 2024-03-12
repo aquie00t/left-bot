@@ -40,7 +40,7 @@ export default class BackCommand extends CommandBase {
         }
 
         // Getting the player instance for the guild
-        const player = this.players.getPlayer(interaction.guildId!);
+        const player = this.players.getPlayer(interaction.guildId!, interaction.channel!);
 
         // Moving to the previous track in the queue
         player.back();

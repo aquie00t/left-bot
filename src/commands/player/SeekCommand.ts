@@ -41,7 +41,7 @@ export default class SeekCommand extends CommandBase {
         }
 
         // Retrieving the player for the guild
-        const player = this.players.getPlayer(interaction.guildId!);
+        const player = this.players.getPlayer(interaction.guildId!, interaction.channel!);
 
         // Getting the number of seconds to seek to from the command options
         const second = interaction.options.getNumber("second")!;

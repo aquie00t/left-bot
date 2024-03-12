@@ -40,7 +40,7 @@ export default class StopCommand extends CommandBase {
         }
 
         // Retrieving the player for the guild
-        const player = this.players.getPlayer(interaction.guildId!);
+        const player = this.players.getPlayer(interaction.guildId!, interaction.channel!);
 
         // Stopping the player
         player.stop();

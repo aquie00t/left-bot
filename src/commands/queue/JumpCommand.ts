@@ -46,7 +46,7 @@ export default class JumpCommand extends CommandBase {
         }
 
         // Retrieving the player for the guild
-        const player = this.players.getPlayer(interaction.guildId!);
+        const player = this.players.getPlayer(interaction.guildId!, interaction.channel!);
 
         // Getting the index provided in the command options
         const index = interaction.options.getNumber("index")!;

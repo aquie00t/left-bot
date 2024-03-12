@@ -40,7 +40,7 @@ export default class ClearCommand extends CommandBase {
         }
 
         // Get the player for the guild
-        const player = this.players.getPlayer(interaction.guildId!);
+        const player = this.players.getPlayer(interaction.guildId!, interaction.channel!);
 
         // Clear the queue
         player.clear();

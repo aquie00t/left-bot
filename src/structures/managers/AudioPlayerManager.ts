@@ -79,9 +79,7 @@ export default class AudioPlayerManager {
         const stream = await play.stream(track.stream_url!);
 
         const resource = this.streamToAudioResource(stream);
-        
-        resource.volume!.setVolume(this.volume);
-        
+                
         this.discordPlayer.play(resource);
     }
     public streamToAudioResource(stream: YouTubeStream | SoundCloudStream): AudioResource
@@ -90,6 +88,8 @@ export default class AudioPlayerManager {
             inputType: stream.type,
             inlineVolume: true
         });
+
+        resource.volume?.setVolume(this.volume);
         
         return resource;
     }
@@ -146,7 +146,9 @@ export default class AudioPlayerManager {
                 const track = this.queueManager.tracks[this.queueManager.trackIndex];
                 this.play(track);
 
-                this.deletedMessage = await this.options.textChannel.send({ embeds: [Embeds.nowPlayingEmbed(track.title)] });
+                const message = await this.options.textChannel.send({ embeds: [Embeds.nowPlayingEmbed(track.title)] }).catch(() => null);
+                if(message !== null)
+                    this.deletedMessage = message;
             }
         }
 

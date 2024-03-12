@@ -1,11 +1,7 @@
-import { config } from "dotenv";
 import LeftClient from "./structures/LeftClient";
-
+import "dotenv/config";
 // Immediately Invoked Function Expression (IIFE) to initialize the bot
 (async (): Promise<void> => {
-    // Load environment variables from .env file
-    config();
-
     // Create a new instance of LeftClient
     const client = new LeftClient();
 

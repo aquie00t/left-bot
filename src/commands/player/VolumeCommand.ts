@@ -56,7 +56,7 @@ export default class VolumeCommand extends CommandBase {
         }
 
         // Getting the player instance for the server
-        const player = this.players.getPlayer(interaction.guildId!);
+        const player = this.players.getPlayer(interaction.guildId!, interaction.channel!);
 
         // Setting the volume of the player
         player.setVolume(level);

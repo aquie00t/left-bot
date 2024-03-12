@@ -44,7 +44,7 @@ export default class RemoveCommand extends CommandBase {
         const index = interaction.options.getNumber("index")!;
 
         // Get the player for the guild
-        const player = this.players.getPlayer(interaction.guildId!);
+        const player = this.players.getPlayer(interaction.guildId!, interaction.channel!);
 
         // Remove the track from the queue
         const removedTrack = player.removeTrack(index);

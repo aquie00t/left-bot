@@ -231,7 +231,7 @@ export default class Player {
             const source = await play.stream(track.stream_url!, { seek: second });
             
             const resource = this.audioPlayer.streamToAudioResource(source);
-
+            
             this.audioPlayer.discordPlayer.play(resource);
 
             return;
